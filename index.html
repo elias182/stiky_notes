@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticky Notes</title>
+    <style>
+        #formulario {
+            display: none;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 20px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+        }
+
+        .nota {
+        position: absolute;
+        box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3); 
+        width: 200px;
+        }
+
+        svg {
+            cursor: pointer;
+        }
+
+        .btnEliminar {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background-color: rgb(255, 174, 0);
+            color: white;
+            border: none;
+            padding: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<button id="btnAgregar">Añadir</button>
+
+<div id="formulario">
+    <h2>Formulario de Nota</h2>
+    <label for="titulo">Título:</label>
+    <input type="text" id="titulo" name="titulo" required><br>
+    <label for="contenido">Contenido:</label>
+    <textarea id="contenido" name="contenido" rows="4" required></textarea><br>
+    <button id="btnGuardar">Guardar</button>
+</div>
+
+<!-- Vista: Notas -->
+<div id="contenedorNotas"></div>
+
+<script src="model/Nota.js"></script>
+<script src="view/Vista.js"></script>
+<script src="controller/Controlador.js"></script>
+<script>
+    const btnAgregar = document.getElementById('btnAgregar');
+    const formulario = document.getElementById('formulario');
+    const btnGuardar = document.getElementById('btnGuardar');
+    const tituloInput = document.getElementById('titulo');
+    const contenidoInput = document.getElementById('contenido');
+    const contenedorNotas = document.getElementById('contenedorNotas');
+    
+
+    btnAgregar.addEventListener('click', () => {
+        formulario.style.display = 'block';
+    });
+
+    btnGuardar.addEventListener('click', () => {
+        const titulo = tituloInput.value;
+        const contenido = contenidoInput.value;
+
+        if (titulo && contenido) {
+            agregarNota(titulo, contenido);
+            formulario.style.display = 'none';
+            tituloInput.value = '';
+            contenidoInput.value = '';
+        } else {
+            alert('Por favor, complete todos los campos.');
+        }
+    });
+
+    function agregarNota(titulo, contenido) {
+        const notaModel = new NotaModel(titulo, contenido);
+        const notaView = new NotaView(contenedorNotas);
+        const notaController = new NotaController(notaModel, notaView);
+        notaView.crearNotaElemento(titulo, contenido);
+        contenedorNotas.appendChild(notaView.notaElemento);
+    }
+</script>
+
+</body>
+</html>
